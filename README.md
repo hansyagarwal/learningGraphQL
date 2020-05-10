@@ -6,6 +6,9 @@
 Dependencies:
 - babel-cli
 - graphql-yoga
+- uuid
+- babel-plugin-transform-object-rest-spread
+- babel-preset-env
 - nodemon
 
 ```

@@ -7,3 +7,19 @@ const subtract = (a,b)=>{
 }
 
 export {add as default, subtract}
+
+//Scalar types: String, Boolean, Int, Float, ID
+//Demo user data
+
+//Type definitions aka application schema
+// const typeDefs = `    
+// `
+
+//Resolvers
+const resolvers = {
+    //Query: ,
+    //Mutation: ,
+    //Post: ,
+    //Comment: ,
+    //User: 
+}

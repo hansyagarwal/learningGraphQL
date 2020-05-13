@@ -1,7 +1,4 @@
 # learningGraphQL
-# GraphQL
-
-## for graphql-basics
 
 Dependencies:
 - babel-cli
@@ -10,6 +7,9 @@ Dependencies:
 - babel-plugin-transform-object-rest-spread
 - babel-preset-env
 - nodemon
+- prisma
+
+for database: postgreSQL, adminer as GUI
 
 ```
 npm install

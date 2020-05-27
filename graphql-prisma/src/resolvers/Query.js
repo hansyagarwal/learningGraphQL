@@ -1,3 +1,5 @@
+import getUserId from '../utils/getUserId'
+
 const Query = {
     users(parent, args, {prisma}, info) {
         const opArgs = {}
@@ -6,26 +8,46 @@ const Query = {
             opArgs.where = {
                 OR: [{
                     name_contains: args.query
-                }, {
-                    email_contains: args.query
                 }]
             }
         }
 
         return prisma.query.users(opArgs, info)
     },
+    myPosts(parent, args, {prisma, request}, info) {
+        const userId = getUserId(request)
+        const opArgs = {
+            where: {
+                author: {
+                    id: userId
+                }
+            }
+        }
+
+        if(args.query) {
+            opArgs.where.OR = [{
+                title_contains: args.query
+            },{
+                body_contains: args.query
+            }]
+        }
+
+        return prisma.query.posts(opArgs, info)
+    },
     posts(parent, args, {prisma}, info) {
  
-        const opArgs = {}
+        const opArgs = {
+            where: {
+                published: true
+            }
+        }
 
         if(args.search){
-            opArgs.where = {
-                OR: [{
-                    title_contains: args.search
-                }, {
-                    body_contains: args.search
-                }]
-            }
+            opArgs.where.OR = [{
+                title_contains: args.search
+            }, {
+                body_contains: args.search
+            }] 
         }
 
         return prisma.query.posts(opArgs,info)
@@ -35,20 +57,36 @@ const Query = {
 
         return prisma.query.comments(null, info)
     },
-    me() {
-        return {
-            id: '123098',
-            name: 'Mike',
-            email: 'mmike@gmail.com'
-        }
+    me(parent,args,{prisma, request},info) {
+        const userId = getUserId(request)
+        
+        return prisma.query.user({
+            where: {
+                id: userId
+            }
+        })
     },
-    post() {
-        return {
-            id: '42069',
-            title: 'Ajin',
-            body: 'Manga',
-            published: true
+    async post(parent,args,{prisma, request}, info) {
+        const userId = getUserId(request, false)
+
+        const posts = await prisma.query.posts({
+            where: {
+                id: args.id,
+                OR: [{
+                    published: true
+                },{
+                    author: {
+                        id: userId
+                    }
+                }]
+            }
+        },info)
+
+        if(posts.length === 0){
+            throw new Error('Post not found')
         }
+
+        return posts[0]
     }
 }
 
